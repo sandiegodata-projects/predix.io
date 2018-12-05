@@ -37,10 +37,9 @@ def get_token(uaa, client, secret):
    
 token = get_token(uua_url+'/oauth/token', client_id, secret)
 
-
 #
 #  Only useful documentation:
-# https://www.programmableweb.com/news/how-ge-current-apis-power-smart-city-applications/sponsored-content/2016/07/21?page=2
+# https://www.programmableweb.com/news/how-ge-current-apis-power-smart-city-applications/sponsored-content/2016/07/21?page=1
 # 
 
 
@@ -51,7 +50,7 @@ bbox = '32.715675:-117.161230,32.708498:-117.151681'
 
 
 
-def get_assets(url, zone, bbox, device_type):
+def get_assets(url, token, zone, bbox, device_type):
    url = url + '/v1/assets/search'
    
    headers = {
@@ -63,11 +62,12 @@ def get_assets(url, zone, bbox, device_type):
        'q': 'device-type:' + device_type,
        'bbox': bbox,
        }
-   response = requests.get(url, headers=headers, params=params)
-   return json.loads(response.text)['_embedded']['assets']
+   r = requests.get(url, headers=headers, params=params)
+   
+   r.raise_for_status()
+   return r.text
+   #return json.loads(response.text)['_embedded']['assets']
 
 
 
-
-
-print(get_assets(metadata_url, ))
+print(get_assets(metadata_url, token, '', bbox, 'DATASIM'))
